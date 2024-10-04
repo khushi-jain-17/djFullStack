@@ -1,0 +1,53 @@
+
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.post('/login/', { email, password },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+                .then(response => {
+                    alert('Login successful');
+                    window.location.href = "{% url 'home-page' %}";
+                 
+                    localStorage.setItem('user', JSON.stringify(response.data));
+                })
+                .catch(error => {
+                    alert('Error logging in: ' + error.response.data.error);
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Login</h1>
+    <form onsubmit="event.preventDefault(); login();">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
+
+
+
+
+
+
+
+
+ 
+

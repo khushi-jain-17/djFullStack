@@ -1,0 +1,83 @@
+
+<div class="col-md-8 offset-md-2">
+    <h1>Add Record</h1>
+    <br/>
+
+    <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+    <div id="success-message" class="alert alert-success" style="display: none;"></div>
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Field</th>
+            <th>Input</th>
+        </tr>
+        <tr>
+            <td>First Name</td>
+            <td><input type="text" id="first_name" class="form-control" placeholder="First Name" required></td>
+        </tr>
+        <tr>
+            <td>Last Name</td>
+            <td><input type="text" id="last_name" class="form-control" placeholder="Last Name" required></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input type="email" id="rec_email" class="form-control" placeholder="Email" required></td>
+        </tr>
+        <tr>
+            <td>City</td>
+            <td><input type="text" id="city" class="form-control" placeholder="City" required></td>
+        </tr>
+    </table>
+
+    <br/>
+    <button id="addRecordBtn" class="btn btn-secondary">Add Record</button>
+    <a href="{% url 'home-page' %}" class="btn btn-secondary">Back</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#addRecordBtn').click(function(event) {
+        event.preventDefault(); // Prevent the default button action
+
+        // Clear previous messages
+        $('#error-message').hide();
+        $('#success-message').hide();
+
+        // Get the values from the input fields
+        const first_name = $('#first_name').val();
+        const last_name = $('#last_name').val();
+        const email = $('#rec_email').val();
+        const city = $('#city').val();
+
+        // Send an AJAX POST request
+        $.ajax({
+            url: '{% url "add_record" %}', // Django URL for the add_record API
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                first_name: first_name,
+                last_name: last_name,
+                rec_email: rec_email,
+                city: city,
+            }),
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for security
+            },
+            success: function(response) {
+                $('#success-message').text(response.message).show();
+                // Optionally, clear the fields after a successful response
+                $('#first_name').val('');
+                $('#last_name').val('');
+                $('#rec_email').val('');
+                $('#city').val('');
+
+            },
+            error: function(xhr) {
+                const errorResponse = JSON.parse(xhr.responseText);
+                $('#error-message').text(errorResponse.error || 'An error occurred.').show();
+            }
+        });
+    });
+});
+</script>

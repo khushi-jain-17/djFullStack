@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        function signup() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            axios.post('/signup/', {
+                name,
+                email,
+                password
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                alert('User created successfully');
+                window.location.href = '/login-page/'; // Redirect to login page
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error('Server responded with error:', error.response.status);
+                    console.error('Error details:', error.response.data);
+                    alert('Error creating user: ' + JSON.stringify(error.response.data));
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Error setting up request:', error.message);
+                }
+                console.error('Axios error config:', error.config);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Signup</h1>
+    <form onsubmit="event.preventDefault(); signup();">
+        <input type="text" id="name" placeholder="Name" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="password" id="password" placeholder="Password" required><br>
+        <button type="submit">Sign Up</button>
+    </form>
+</body>
+</html>
